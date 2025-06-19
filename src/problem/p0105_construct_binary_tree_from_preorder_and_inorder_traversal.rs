@@ -61,15 +61,15 @@ impl Solution {
         for (i, v) in inorder.iter().enumerate() {
             map.insert(v, i);
         }
-        Self::cur(0, 0, inorder.len() - 1, &preorder, &map)
+        Self::cur(0, 0, (inorder.len() - 1) as i32, &preorder, &map)
     }
 
-    fn cur(root: usize, left: usize, right: usize, preorder: &Vec<i32>, map: &HashMap<&i32, usize>)-> Option<Rc<RefCell<TreeNode>>> {
+    fn cur(root: usize, left: i32, right: i32, preorder: &Vec<i32>, map: &HashMap<&i32, usize>)-> Option<Rc<RefCell<TreeNode>>> {
         if left > right { return None; }
         let mut node = TreeNode::new(preorder[root]);
         let i = map.get(&preorder[root]).unwrap();
-        node.left = Self::cur(root + 1, left, i - 1, &preorder, map);
-        node.right = Self::cur(root + i - left + 1, i + 1, right, &preorder, map);
+        node.left = Self::cur(root + 1, left, (i - 1) as i32, preorder, map);
+        node.right = Self::cur(root + i - (left as usize) + 1, (i + 1) as i32, right, preorder, map);
         Some(Rc::new(RefCell::from(node)))
     }
 }
@@ -82,5 +82,6 @@ mod tests {
 
     #[test]
     fn test_105() {
+        Solution::build_tree(vec![3,9,20,15,7], vec![9,3,15,20,7]).unwrap();
     }
 }
